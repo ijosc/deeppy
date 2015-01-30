@@ -74,20 +74,11 @@ class FullyConnected(Layer, ParamMixin):
         if to_x:
             return ca.dot(y_grad, self.W.array.T)
 
-    def predict(self, x):
-        return self.fprop(x, '')
-
     def params(self):
         return self.W, self.b
 
     def set_params(self, params):
         self.W, self.b = params
-
-    def input_grad(self, y, y_pred):
-        return self.bprop(y - y_pred)
-
-    def loss(self, y, y_pred):
-        return (y - y_pred)
 
     def output_shape(self, input_shape):
         return (input_shape[0], self.n_output)
@@ -152,3 +143,25 @@ class MultinomialLogReg(Layer, LossMixin):
 
     def output_shape(self, input_shape):
         return (input_shape[0],)
+
+class MeanSquaredError(Layer, LossMixin):
+   def __init__(self):
+       self.name = 'mse'
+
+   def _setup(self, input_shape):
+       self.n_targets = input_shape[1]
+
+   def fprop(self, x, phase):
+       return x
+
+   def predict(self, x):
+       return x
+
+   def input_grad(self, y, y_pred):
+       return 2.0 / self.n_targets * (y_pred - y)
+
+   def loss(self, y, y_pred):
+       return ca.mean((y-y_pred)**2, axis=1)
+
+   def output_shape(self, input_shape):
+       return input_shape

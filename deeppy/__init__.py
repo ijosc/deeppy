@@ -15,6 +15,7 @@ from .feed_forward import (
     FullyConnected,
     Activation,
     MultinomialLogReg,
+    MeanSquaredError,
     Dropout,
     DropoutFullyConnected,
     Convolutional,
